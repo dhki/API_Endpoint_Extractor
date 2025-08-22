@@ -2,6 +2,8 @@ import argparse
 import subprocess
 import shutil
 
+from utils.result_writer import ResultWriter
+
 DECOMPILED_SMALI_PATH = "./target_smali"
 
 # decompile apk with apktool
@@ -35,7 +37,6 @@ def main():
     decompile_apk(apk_file=args.apk_path)
 
     ## TODO: Find API Endpoint
-    
 
 if __name__ == "__main__":
     main()
