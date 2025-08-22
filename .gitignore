@@ -1,1 +1,2 @@
 *.apk
+__pycache__/
