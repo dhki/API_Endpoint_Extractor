@@ -2,11 +2,15 @@ import os
 import argparse
 import subprocess
 import shutil
+import json
 
 from utils.result_writer import ResultWriter
 from utils.xml_parse import parse_xml_values
+from utils.android_manifest import parse_permissions_manifest
 
 DECOMPILED_SMALI_PATH = "./target_smali"
+ANDROID_MANIFEST_PATH = "./outputs/apk_permissions.json"
+AM_PERMISSION_DICT_PATH = "./resources/user_permission.json"
 
 api_endpoints = set()
 smali_variables : dict = {}
@@ -32,6 +36,22 @@ def decompile_apk(apk_file: str):
         print("[!] Error occured")
         print(f"    {e}")
 
+def analyze_manifest(decoded_dir: str, permission_dict_dir: str, output_dir: str):
+    """
+    :param decoded_dir: 디컴파일된 APK 디렉토리 경로
+    :param permission_dict_dir: 권한 설명이 담긴 JSON 파일
+    :param output_dir: analyze_manifest의 출력결과를 json으로 저장할 경로
+    :return:
+    """
+    # 1. 권한 추출
+    results = parse_permissions_manifest(decoded_dir, permission_dict_dir)
+
+    # 3. JSON 저장
+    with open(output_dir, "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=4, ensure_ascii=False)
+
+    print(f"[+] Permission anlaysis done! stored at :{output_dir}")
+
 
 def main():
     # parse arguments
@@ -44,6 +64,10 @@ def main():
 
     # decompile apk
     decompile_apk(apk_file=args.apk_path)
+
+    # Android Manifest 분석
+    os.makedirs(os.path.dirname(ANDROID_MANIFEST_PATH), exist_ok=True)
+    analyze_manifest(DECOMPILED_SMALI_PATH, AM_PERMISSION_DICT_PATH, ANDROID_MANIFEST_PATH)
 
     # parse strings.xml
     xml_urls = parse_xml_values(f"{DECOMPILED_SMALI_PATH}/res/values/strings.xml")
