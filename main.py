@@ -9,7 +9,7 @@ from utils.xml_parse import parse_xml_values
 from utils.android_manifest import parse_permissions_manifest
 
 DECOMPILED_SMALI_PATH = "./target_smali"
-ANDROID_MANIFEST_PATH = "./outputs/android_manifest_output.json"
+ANDROID_MANIFEST_PATH = "./outputs/apk_permissions.json"
 AM_PERMISSION_DICT_PATH = "./resources/user_permission.json"
 
 api_endpoints = set()
@@ -50,7 +50,7 @@ def analyze_manifest(decoded_dir: str, permission_dict_dir: str, output_dir: str
     with open(output_dir, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=4, ensure_ascii=False)
 
-    print(f"[+] 분석 완료! 결과 저장: {output_dir}")
+    print(f"[+] Permission anlaysis done! stored at :{output_dir}")
 
 
 def main():
