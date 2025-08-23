@@ -9,7 +9,8 @@ from utils.xml_parse import parse_xml_values
 from utils.android_manifest import parse_permissions_manifest
 
 DECOMPILED_SMALI_PATH = "./target_smali"
-ANDROID_MANIFEST_PATH = "./outputs/apk_permissions.json"
+OUTPUT_DIR = "outputs"
+
 AM_PERMISSION_DICT_PATH = "./resources/user_permission.json"
 
 api_endpoints = set()
@@ -57,17 +58,16 @@ def main():
     # parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('apk_path', type=str, help='path of target apk file')
-    parser.add_argument("-o", "--output_file", type=str, default=None)
     args = parser.parse_args()
 
-    result_writer = ResultWriter(path=args.output_file)
+    result_writer = ResultWriter(path=f"{OUTPUT_DIR}/URLS.txt")
 
     # decompile apk
     decompile_apk(apk_file=args.apk_path)
 
     # Android Manifest 분석
-    os.makedirs(os.path.dirname(ANDROID_MANIFEST_PATH), exist_ok=True)
-    analyze_manifest(DECOMPILED_SMALI_PATH, AM_PERMISSION_DICT_PATH, ANDROID_MANIFEST_PATH)
+    os.makedirs(os.path.dirname(OUTPUT_DIR), exist_ok=True)
+    analyze_manifest(DECOMPILED_SMALI_PATH, AM_PERMISSION_DICT_PATH, f"{OUTPUT_DIR}/apk_permissions.json")
 
     # parse strings.xml
     xml_urls = parse_xml_values(f"{DECOMPILED_SMALI_PATH}/res/values/strings.xml")

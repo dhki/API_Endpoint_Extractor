@@ -8,6 +8,7 @@ class ResultWriter:
     def write(self, url_info: str):
         if self.file:
             self.file.write(url_info + "\n")
+            print(f"[+] {url_info}")
         else:
             print(f"[+] {url_info}")
     
