@@ -102,17 +102,17 @@ def parse_permissions_manifest(decoded_dir: str, permission_dict_path: str) -> d
         }
 
     # 2. 콘솔 출력
-    print("[+] Permission 추출 완료")
+    # print("[+] Permission 추출 완료")
     for package_name, info in results.items():
         permissions = info.get("permissions", [])
         if not permissions:
             continue  # 권한이 없는 패키지는 출력하지 않음
 
         print("="*50)
-        print(f"패키지: {package_name}")
-        print(f"Manifest 파일: {info.get('file_path')}")
+        print(f"Package name: {package_name}")
+        print(f"Manifest file: {info.get('file_path')}")
         print("-"*50)
-        print("권한 목록:")
+        print("Permissions:")
         for perm in permissions:
             print(f"  - {perm['permission']}: {perm['description']}")
         print("="*50)
