@@ -8,6 +8,8 @@ from utils.result_writer import ResultWriter
 from utils.xml_parse import parse_xml_values
 from utils.android_manifest import parse_permissions_manifest
 
+from utils.smali_parse import parse_all_smali
+
 DECOMPILED_SMALI_PATH = "./target_smali"
 OUTPUT_DIR = "outputs"
 
@@ -60,20 +62,24 @@ def main():
     parser.add_argument('apk_path', type=str, help='path of target apk file')
     args = parser.parse_args()
 
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     result_writer = ResultWriter(path=f"{OUTPUT_DIR}/URLS.txt")
 
     # decompile apk
     decompile_apk(apk_file=args.apk_path)
 
     # Android Manifest 분석
-    os.makedirs(os.path.dirname(OUTPUT_DIR), exist_ok=True)
+    # os.makedirs(os.path.dirname(OUTPUT_DIR), exist_ok=True)
     analyze_manifest(DECOMPILED_SMALI_PATH, AM_PERMISSION_DICT_PATH, f"{OUTPUT_DIR}/apk_permissions.json")
 
     # parse strings.xml
     xml_urls = parse_xml_values(f"{DECOMPILED_SMALI_PATH}/res/values/strings.xml")
-    for url in xml_urls:
-        api_endpoints.add(url)
+    api_endpoints.union(xml_urls)
     
+    # parse all *.smali
+    smali_urls = parse_all_smali(DECOMPILED_SMALI_PATH)
+    api_endpoints.union(smali_urls)
+
     # make result file (or print at console)
     for v in api_endpoints:
         result_writer.write(v)

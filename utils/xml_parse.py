@@ -9,13 +9,18 @@ def parse_xml_values(path: str):
         print(f"    {path}")
         return []
 
-    ret = []
+    print("=" * 50)
+    print(f"{'Parsing string.xml...'.center(50)}")
+    print("-" * 50)
+    ret = set()
     tree = ET.parse(path)
     root = tree.getroot()
 
     for elem in root.iter():
         if elem.text and (elem.text.startswith("http://") or elem.text.startswith("https://")):
-           ret.append(elem.text.strip())
+           ret.add(elem.text.strip())
+           print(elem.text.strip())
     
+    print("=" * 50)
     return ret
     

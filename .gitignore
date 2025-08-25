@@ -1,3 +1,5 @@
 *.apk
 __pycache__/
 .idea/
+target_smali/
+outputs/
